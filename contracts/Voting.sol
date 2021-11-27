@@ -41,7 +41,14 @@ contract Voting is Ownable {
     event VoterRegistered(address voterAddress);
     event WorkflowStatusChange(WorkflowStatus previousStatus, WorkflowStatus newStatus);
     event ProposalRegistered(uint proposalId);
-    event Voted (address voter, uint proposalId);
+    event Voted (address voterAddress, uint proposalId);
+
+    /**
+     * @dev Constructor.
+     */
+    constructor() Ownable() {
+        addVoter(msg.sender);
+    }
 
     /**
      * @dev Check if the sender is registered in the voters list.
@@ -126,7 +133,7 @@ contract Voting is Ownable {
      *
      * @param _voterAddress The voter address.
      */
-    function addVoter(address _voterAddress) external onlyOwner {
+    function addVoter(address _voterAddress) public onlyOwner {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, "The workflow status cannot allowed you to add voters.");
         require(!voters[_voterAddress].isRegistered, "The voter is already registered.");
 

@@ -125,7 +125,7 @@ contract("Voting", function (accounts) {
             expect(voter.hasVoted).to.be.equal(true);
             expect(proposal.description).to.be.equal(proposalDescription1);
             expect(proposal.voteCount).to.be.equal('1');
-            expectEvent(receipt, "Voted", { voter: voter1, proposalId: new BN(0) });
+            expectEvent(receipt, "Voted", { voterAddress: voter1, proposalId: new BN(0) });
         });
 
         it("should not set a vote if it is not a voter", async function() {
