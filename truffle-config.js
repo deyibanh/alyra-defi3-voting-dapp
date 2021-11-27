@@ -7,7 +7,7 @@ module.exports = {
     networks: {
         development: {
             host: "127.0.0.1",
-            port: 8545,
+            port: 7545, // Ganache UI: 7545, Ganache CLI: 8545
             network_id: "*",
         },
         ropsten: {
