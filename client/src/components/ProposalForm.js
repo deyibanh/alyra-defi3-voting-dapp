@@ -18,14 +18,11 @@ function ProposalForm(props) {
 
     return (
         <div>
-            { voter.isRegistered
-                &&
-                    <div>
-                        <label>Proposal description: </label>
-                        <input type="text" value={ inputAddProposalDescription } onChange={ onChangeInputAddProposalDescription }  />
-                        <input type="submit" value="Add proposal" onClick={ onSubmitAddProposal }/>
-                    </div>
-            }
+            <div>
+                <label>Proposal description: </label>
+                <input type="text" value={ inputAddProposalDescription } onChange={ onChangeInputAddProposalDescription }  />
+                <input type="submit" value="Add proposal" onClick={ onSubmitAddProposal }/>
+            </div>
         </div>
     );
 }

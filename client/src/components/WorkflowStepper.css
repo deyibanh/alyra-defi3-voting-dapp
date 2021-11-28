@@ -1,0 +1,10 @@
+.WorflowStatus {
+    font-size: 16px;
+    font-style: italic;
+    text-align: left;
+}
+.InputRow {
+    display: flex;
+    align-items: center;
+    height: 50px;
+  }

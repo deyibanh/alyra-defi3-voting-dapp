@@ -18,8 +18,8 @@ function Header(props) {
                             { window.ethereum !== "undefined" && state.accounts
                                 ?
                                     <div>
-                                        <div> 
-                                            <span class="walletInfoLabel">Wallet connected</span>
+                                        <div>
+                                            <span className="walletInfoLabel">Wallet connected</span>
                                             <CircleFill color="green" />
                                         </div>
                                         <div>
@@ -27,7 +27,7 @@ function Header(props) {
                                         </div>
                                     </div>
                                 :   <div>
-                                        <span class="walletInfoLabel">Your wallet is not connected</span>
+                                        <span className="walletInfoLabel">Your wallet is not connected</span>
                                         <CircleFill color="red" />
                                     </div>
                             }

@@ -14,6 +14,7 @@ function App() {
         owner: null,
         workflowStatus: null
     });
+    const [loadingState, setLoadingState] = useState(true);
     const [voter, setVoter] = useState({});
     const [proposalWinners, setProposalWinners] = useState([]);
 
@@ -22,6 +23,7 @@ function App() {
             try {
                 const web3 = await getWeb3();
                 const accounts = await web3.eth.getAccounts();
+                console.log(accounts);
                 const networkId = await web3.eth.net.getId();
                 const deployedNetwork = VotingContract.networks[networkId];
                 const contract = new web3.eth.Contract(
@@ -39,16 +41,16 @@ function App() {
                     owner: owner,
                     workflowStatus: workflowStatus
                 });
+                setLoadingState(false);
                 setVoter(voter);
 
                 if (voter.isRegistered && workflowStatus === "5") {
                     const winners = await contract.methods.getWinners().call();
                     setProposalWinners(winners);
                     console.log(winners);
-
                 }
 
-                await contract.events.WorkflowStatusChange()
+                contract.events.WorkflowStatusChange()
                     .on("data", event => {
                         const newStatus = event.returnValues.newStatus;
                         setState({
@@ -63,13 +65,15 @@ function App() {
                     .on("error", err => console.error(err))
                     .on("connected", str => console.log(str));
 
-                await contract.events.VoterRegistered()
+                contract.events.VoterRegistered()
                     .on("data", async event => {
                         const voterAddress = event.returnValues.voterAddress;
 
-                        if (voterAddress === state.accounts[0]) {
-                            const voter = await contract.methods.getVoter(accounts[0]).call();
-                            setVoter(voter);
+                        if (voterAddress === accounts[0]) {
+                            const voterInfo = await contract.methods.getVoter(accounts[0]).call();
+                            console.log(voterInfo);
+
+                            setVoter(voterInfo);
                         }
 
                         console.log("New voter has been registered: " + voterAddress);
@@ -78,13 +82,13 @@ function App() {
                     .on("error", err => console.error(err))
                     .on("connected", str => console.log(str));
                 
-                await contract.events.Voted()
+                contract.events.Voted()
                     .on("data", async event => {
                         console.log(event);
                         const voterAddress = event.returnValues.voterAddress;
                         // const proposalId = event.returnValues.proposalId;
 
-                        if (voterAddress === state.accounts[0]) {
+                        if (voterAddress === accounts[0]) {
                             const voter = await contract.methods.getVoter(accounts[0]).call();
                             setVoter(voter);
                         }
@@ -95,7 +99,7 @@ function App() {
                     .on("error", err => console.error(err))
                     .on("connected", str => console.log(str));
             } catch (error) {
-                alert("Failed to load web3, accounts, or contract. Check console for details.");
+                setLoadingState(false);
                 console.error(error);
             }
         })();
@@ -104,7 +108,7 @@ function App() {
     return (
         <div className="App">
             <Header state={ state } />
-            <Content state={ state } voter={ voter } proposalWinners={ proposalWinners } />
+            <Content state={ state } loadingState={ loadingState } voter={ voter } proposalWinners={ proposalWinners } />
             <Footer />
         </div>
     );

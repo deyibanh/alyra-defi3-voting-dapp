@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import Button from 'react-bootstrap/Button';
-import "./VoterForm.css";
+import "./Voter.css";
 
 
-function VoterForm(props) {
+function Voter(props) {
     const state = props.state;
     const [inputAddVoterAddress, setInputAddVoterAddress] = useState("");
     const [inputGetVoterAddress, setInputGetVoterAddress] = useState("");
@@ -36,7 +35,6 @@ function VoterForm(props) {
                 <label>Add new voter : </label>
                 <input type="text" value={ inputAddVoterAddress } onChange={ onChangeInputAddVoterAddress }  />
                 <input type="submit" value="Add voter" onClick={ onSubmitAddVoter }/>
-                <Button />
             </div>
 
             <div>
@@ -59,4 +57,4 @@ function VoterForm(props) {
     );
 }
 
-export default VoterForm;
+export default Voter;
