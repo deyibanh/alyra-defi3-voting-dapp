@@ -1,15 +1,12 @@
 import React, { useState } from "react";
-import { Card, Container, Row, Col, Button, FormControl, InputGroup } from 'react-bootstrap';
-import { PersonCircle, CheckCircleFill, XCircleFill, PersonPlusFill, Search } from 'react-bootstrap-icons';
+import { Container, Row, Col, Button, FormControl, InputGroup } from 'react-bootstrap';
+import { PersonPlusFill, Search } from 'react-bootstrap-icons';
 
 import "./Voter.css";
 
 function Voter(props) {
     const state = props.state;
     const [inputVoterAddress, setInputVoterAddress] = useState("");
-    const [showVoterInfo, setShowVoterInfo] = useState(false);
-    // const [voterSearch, setVoterSearch] = useState({});
-    // const [voterSearchAddress, setVoterSearchAddress] = useState("");
 
     function onChangeInputVoterAddress(event) {
         event.preventDefault();
@@ -17,20 +14,23 @@ function Voter(props) {
     }
 
     async function onSubmitAddVoter() {
-        await state.contract.methods.addVoter(inputVoterAddress).send({from: state.accounts[0]});
-        // setVoterSearch({});
-        // setVoterSearchAddress("");
-        // props.onChangeShowVoterInfo(false);
-        // setShowVoterInfo(false);
+        try {
+            await state.contract.methods.addVoter(inputVoterAddress).send({from: state.accounts[0]});
+            props.onChangeVoterSearch("", {});
+            props.onChangeShowVoterInfo(false);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     async function onSubmitGetVoter() {
-        const voterSearch = await state.contract.methods.getVoter(inputVoterAddress).call({from: state.accounts[0]});
-        // setVoterSearch(voterSearch);
-        // setVoterSearchAddress(inputVoterAddress);
-        props.onChangeVoterSearch(inputVoterAddress, voterSearch);
-        props.onChangeShowVoterInfo(true);
-        // setShowVoterInfo(true);
+        try {
+            const voterSearch = await state.contract.methods.getVoter(inputVoterAddress).call({from: state.accounts[0]});
+            props.onChangeVoterSearch(inputVoterAddress, voterSearch);
+            props.onChangeShowVoterInfo(true);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return (
@@ -45,13 +45,13 @@ function Voter(props) {
                                 value={ inputVoterAddress }
                                 onChange={ onChangeInputVoterAddress }
                             />
-                            <Button variant="outline-secondary" onClick={ onSubmitGetVoter } >
+                            <Button disabled={ inputVoterAddress === "" } variant="outline-secondary" onClick={ onSubmitGetVoter } >
                                 <Search />
                             </Button>
                             { state.workflowStatus === "0"
                                 && state.accounts[0] === state.owner
                                 &&
-                                    <Button variant="outline-secondary" onClick={ onSubmitAddVoter } >
+                                    <Button disabled={ inputVoterAddress === "" } variant="outline-secondary" onClick={ onSubmitAddVoter } >
                                         <PersonPlusFill />
                                     </Button>
                             }

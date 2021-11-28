@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Container, Row, Col, Button, InputGroup, FormControl } from 'react-bootstrap';
 import "./ProposalForm.css";
 
 function ProposalForm(props) {
@@ -13,15 +14,30 @@ function ProposalForm(props) {
     async function onSubmitAddProposal(event) {
         event.preventDefault();
         await state.contract.methods.addProposal(inputAddProposalDescription).send({from: state.accounts[0]});
+        setInputAddProposalDescription("");
     }
 
     return (
         <div>
-            <div>
-                <label>Proposal description: </label>
-                <input type="text" value={ inputAddProposalDescription } onChange={ onChangeInputAddProposalDescription }  />
-                <input type="submit" value="Add proposal" onClick={ onSubmitAddProposal }/>
-            </div>
+            <Container>
+                <Row>
+                    <Col>
+                        <InputGroup>
+                            <FormControl
+                                placeholder="Describe your proposal..."
+                                aria-label="Describe your proposal..."
+                                value={ inputAddProposalDescription }
+                                onChange={ onChangeInputAddProposalDescription }
+                            />
+                            <Button disabled={ inputAddProposalDescription === "" } onClick={ onSubmitAddProposal } >
+                                Submit
+                            </Button>
+                        </InputGroup>
+                    </Col>
+                    <Col>
+                    </Col>
+                </Row>
+            </Container>
         </div>
     );
 }

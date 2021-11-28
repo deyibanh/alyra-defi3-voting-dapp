@@ -16,14 +16,13 @@ function App() {
     });
     const [loadingState, setLoadingState] = useState(true);
     const [voter, setVoter] = useState({});
-    const [proposalWinners, setProposalWinners] = useState([]);
+    const [proposalIdsWinners, setProposalIdsWinners] = useState([]);
 
     useEffect(() => {
         (async function () {
             try {
                 const web3 = await getWeb3();
                 const accounts = await web3.eth.getAccounts();
-                console.log(accounts);
                 const networkId = await web3.eth.net.getId();
                 const deployedNetwork = VotingContract.networks[networkId];
                 const contract = new web3.eth.Contract(
@@ -45,9 +44,8 @@ function App() {
                 setVoter(voter);
 
                 if (voter.isRegistered && workflowStatus === "5") {
-                    const winners = await contract.methods.getWinners().call();
-                    setProposalWinners(winners);
-                    console.log(winners);
+                    const winnersIds = await contract.methods.getWinningProposalIds().call();
+                    setProposalIdsWinners(winnersIds);
                 }
 
                 contract.events.WorkflowStatusChange()
@@ -71,12 +69,8 @@ function App() {
 
                         if (voterAddress === accounts[0]) {
                             const voterInfo = await contract.methods.getVoter(accounts[0]).call();
-                            console.log(voterInfo);
-
                             setVoter(voterInfo);
                         }
-
-                        console.log("New voter has been registered: " + voterAddress);
                     })
                     .on("changed", changed => console.log(changed))
                     .on("error", err => console.error(err))
@@ -84,7 +78,6 @@ function App() {
                 
                 contract.events.Voted()
                     .on("data", async event => {
-                        console.log(event);
                         const voterAddress = event.returnValues.voterAddress;
                         // const proposalId = event.returnValues.proposalId;
 
@@ -92,8 +85,6 @@ function App() {
                             const voter = await contract.methods.getVoter(accounts[0]).call();
                             setVoter(voter);
                         }
-
-                        console.log("New vote: " + voterAddress);
                     })
                     .on("changed", changed => console.log(changed))
                     .on("error", err => console.error(err))
@@ -108,7 +99,8 @@ function App() {
     return (
         <div className="App">
             <Header state={ state } />
-            <Content state={ state } loadingState={ loadingState } voter={ voter } proposalWinners={ proposalWinners } />
+            <Content state={ state } loadingState={ loadingState } voter={ voter } proposalIdsWinners={ proposalIdsWinners } />
+            <hr />
             <Footer />
         </div>
     );

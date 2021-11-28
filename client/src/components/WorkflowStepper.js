@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Card, Container, Row, Col, Button, FormControl, InputGroup } from 'react-bootstrap';
-import { PersonCircle, CheckCircleFill, XCircleFill, PersonPlusFill, Search, CaretRight} from 'react-bootstrap-icons';
+import { Card, Container, Row, Col, Button } from 'react-bootstrap';
+import { PersonCircle, CheckCircleFill, XCircleFill, CaretRight } from 'react-bootstrap-icons';
 import { Box, Step, Stepper, StepLabel } from '@mui/material';
 import Voter from "./Voter";
 import "./WorkflowStepper.css";
@@ -51,34 +51,41 @@ function WorkflowStepper(props) {
 
     async function startRegisteringProposals() {
         await state.contract.methods.startRegisteringProposals().send({from: state.accounts[0]});
+        setShowVoterInfo(false);
+        setVoterSearchAddress("");
+        setVoterSearch({});
     }
 
     async function stopRegisteringProposals() {
         await state.contract.methods.stopRegisteringProposals().send({from: state.accounts[0]});
+        setShowVoterInfo(false);
+        setVoterSearchAddress("");
+        setVoterSearch({});
     }
 
     async function startVotingSession() {
         await state.contract.methods.startVotingSession().send({from: state.accounts[0]});
+        setShowVoterInfo(false);
+        setVoterSearchAddress("");
+        setVoterSearch({});
     }
 
     async function stopVotingSession() {
         await state.contract.methods.stopVotingSession().send({from: state.accounts[0]});
+        setShowVoterInfo(false);
+        setVoterSearchAddress("");
+        setVoterSearch({});
     }
 
     async function tallyVotes() {
         await state.contract.methods.tallyVotes().send({from: state.accounts[0]});
+        setShowVoterInfo(false);
+        setVoterSearchAddress("");
+        setVoterSearch({});
     }
 
     function onChangeShowVoterInfo(showVoterInfoValue) {
         setShowVoterInfo(showVoterInfoValue);
-
-        // if (!showVoterInfoValue) {
-        //     setVoterSearch({});
-        //     setVoterSearchAddress("");
-        // } else {
-        //     setVoterSearch(voterSearch);
-        //     setVoterSearchAddress(inputVoterAddressValue);
-        // }
     }
 
     function onChangeVoterSearch(inputVoterAddress, voterSearch) {
@@ -147,7 +154,7 @@ function WorkflowStepper(props) {
                             { state.accounts[0] === state.owner
                                 && state.workflowStatus === "4"
                                 &&
-                                    <Button variant="primary" size="sm" onClick={ tallyVotes }>
+                                    <Button variant="primary" onClick={ tallyVotes }>
                                         Tally votes
                                         <CaretRight />
                                     </Button>

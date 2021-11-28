@@ -2,14 +2,13 @@ import React from "react";
 import { Alert } from 'react-bootstrap';
 import WorkflowStepper from "./WorkflowStepper";
 import Proposal from "./Proposal";
-import ProposalForm from "./ProposalForm";
 import "./Content.css";
 
 function Content(props) {
     const state = props.state;
     const loadingState = props.loadingState;
     const voter = props.voter;
-    const proposalWinners = props.proposalWinners;
+    const proposalIdsWinners = props.proposalIdsWinners;
 
     return (
         <div className="Content">
@@ -21,9 +20,6 @@ function Content(props) {
                             ?
                                 <div>
                                     <WorkflowStepper state={ state } voter={ voter } />
-                                    {/* { (voter.isRegistered || state.accounts[0] === state.owner)
-                                        && <Voter state={ state } />
-                                    } */}
                                     { state.workflowStatus === "0"
                                         && 
                                             <Alert variant="info" className="AlertBox">
@@ -36,14 +32,11 @@ function Content(props) {
                                                 </p>
                                             </Alert>
                                     }
-                                    { state.workflowStatus === "1"
-                                        && voter.isRegistered
-                                        && <ProposalForm state={ state } voter={ voter } />
-                                    }
+                                    <hr />
                                     { parseInt(state.workflowStatus) >= 1
                                         && parseInt(state.workflowStatus) <= 5
                                         && voter.isRegistered
-                                        && <Proposal state={ state } voter={ voter }  proposalWinners={ proposalWinners } />
+                                        && <Proposal state={ state } voter={ voter } proposalIdsWinners={ proposalIdsWinners } />
                                     }
                                 </div>
                             :
