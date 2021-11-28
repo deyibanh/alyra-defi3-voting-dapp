@@ -1,4 +1,8 @@
-header {
-    min-height: 50px;
-    background: lightcyan;
+#walletInfo {
+    font-size: 10px;
+    text-align: right;
+}
+
+.walletInfoLabel {
+    margin-right: 2px;
 }

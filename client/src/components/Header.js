@@ -1,28 +1,48 @@
 import React from "react";
+import { Navbar, Container } from 'react-bootstrap';
+import { CircleFill } from 'react-bootstrap-icons';
 import "./Header.css";
 
 function Header(props) {
-    const title = "Alyra London - Défi 3 - Voting System";
+    const title = "Alyra Voting System";
     const state = props.state;
 
     return (
         <header>
-            <div>{ title }</div>
-            <div>
-                Your wallet:
-                { window.ethereum !== "undefined" && state.accounts
-                    ? <span> Address { state.accounts[0] }</span>
-                    : <span> Not connected.</span>
-                }
-                { window.ethereum !== "undefined"
-                    && state.accounts
-                    && state.accounts[0] === state.owner
-                    && 
-                    <div>
-                        You are the owner.
-                    </div>
-                }
-            </div>
+            <Navbar bg="light" expand="lg">
+                <Container>
+                    <Navbar.Brand href="#">{ title }</Navbar.Brand>
+                    <Navbar.Toggle />
+                        <Navbar.Collapse className="justify-content-end">
+                        <Navbar.Text id="walletInfo">
+                            { window.ethereum !== "undefined" && state.accounts
+                                ?
+                                    <div>
+                                        <div> 
+                                            <span class="walletInfoLabel">Wallet connected</span>
+                                            <CircleFill color="green" />
+                                        </div>
+                                        <div>
+                                            <u>{ state.accounts[0] }</u>
+                                        </div>
+                                    </div>
+                                :   <div>
+                                        <span class="walletInfoLabel">Your wallet is not connected</span>
+                                        <CircleFill color="red" />
+                                    </div>
+                            }
+                            { window.ethereum !== "undefined"
+                                && state.accounts
+                                && state.accounts[0] === state.owner
+                                && 
+                                    <div>
+                                        (Owner)
+                                    </div>
+                            }
+                        </Navbar.Text>
+                    </Navbar.Collapse>
+                </Container>
+            </Navbar>
         </header>
     );
 }
