@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Button, Col, Container, Row } from 'react-bootstrap';
-import { CaretRight } from 'react-bootstrap-icons';
+import { Card, Container, Row, Col, Button, FormControl, InputGroup } from 'react-bootstrap';
+import { PersonCircle, CheckCircleFill, XCircleFill, PersonPlusFill, Search, CaretRight} from 'react-bootstrap-icons';
 import { Box, Step, Stepper, StepLabel } from '@mui/material';
+import Voter from "./Voter";
 import "./WorkflowStepper.css";
 
 function WorkflowStepper(props) {
     const state = props.state;
+    const voter = props.voter;
     const steps = [
         "Voters Registration",
         "Proposals Registration",
@@ -21,6 +23,11 @@ function WorkflowStepper(props) {
         "Voting Session Ended",
         "Votes Tallied"
     ];
+
+    const [voterSearch, setVoterSearch] = useState({});
+    const [voterSearchAddress, setVoterSearchAddress] = useState("");
+    const [showVoterInfo, setShowVoterInfo] = useState(false);
+
 
     useEffect(() => {
         (function () {
@@ -62,6 +69,24 @@ function WorkflowStepper(props) {
         await state.contract.methods.tallyVotes().send({from: state.accounts[0]});
     }
 
+    function onChangeShowVoterInfo(showVoterInfoValue) {
+        setShowVoterInfo(showVoterInfoValue);
+
+        // if (!showVoterInfoValue) {
+        //     setVoterSearch({});
+        //     setVoterSearchAddress("");
+        // } else {
+        //     setVoterSearch(voterSearch);
+        //     setVoterSearchAddress(inputVoterAddressValue);
+        // }
+    }
+
+    function onChangeVoterSearch(inputVoterAddress, voterSearch) {
+        setVoterSearchAddress(inputVoterAddress);
+        setVoterSearch(voterSearch);
+    }
+    
+
     return (
         <div className="WorkflowStepper">
             <Container className="WorkflowStepperContainer">
@@ -77,51 +102,104 @@ function WorkflowStepper(props) {
                     </Box>
                 </Row>
                 <Row className="InputRow">
-                    <Col sm={8}>
-                        <div className="WorflowStatus">State: { workflowStatusLabels[state.workflowStatus] }</div> 
-                    </Col>
-                    <Col sm={4}>
-                        { state.accounts[0] === state.owner
-                            && state.workflowStatus === "0"
-                            &&
-                                <Button variant="primary" onClick={ startRegisteringProposals }>
-                                    Start registering proposals
-                                    <CaretRight />
-                                </Button>
-                        }
-                        { state.accounts[0] === state.owner
-                            && state.workflowStatus === "1"
-                            &&
-                                <Button variant="primary" onClick={ stopRegisteringProposals }>
-                                    Stop registering proposals
-                                    <CaretRight />
-                                </Button>
-                        }
-                        { state.accounts[0] === state.owner
-                            && state.workflowStatus === "2"
-                            &&
-                                <Button variant="primary" onClick={ startVotingSession }>
-                                    Start voting session
-                                    <CaretRight />
-                                </Button>
-                        }
-                        { state.accounts[0] === state.owner
-                            && state.workflowStatus === "3"
-                            &&
-                                <Button variant="primary" onClick={ stopVotingSession }>
-                                    Stop voting session
-                                    <CaretRight />
-                                </Button>
-                        }
-                        { state.accounts[0] === state.owner
-                            && state.workflowStatus === "4"
-                            &&
-                                <Button variant="primary" size="sm" onClick={ tallyVotes }>
-                                    Tally votes
-                                    <CaretRight />
-                                </Button>
+                    <Col sm={9}>
+                        { (voter.isRegistered || state.accounts[0] === state.owner)
+                            && <Voter state={ state } onChangeShowVoterInfo={ onChangeShowVoterInfo } onChangeVoterSearch={ onChangeVoterSearch }/>
                         }
                     </Col>
+                    <Col sm={3}>
+                        <Row>
+                            <div className="WorflowStatus">State: <b>{ workflowStatusLabels[state.workflowStatus] }</b></div> 
+                        </Row>
+                        <Row>
+                            { state.accounts[0] === state.owner
+                                && state.workflowStatus === "0"
+                                &&
+                                    <Button variant="primary" onClick={ startRegisteringProposals }>
+                                        Start registering proposals
+                                        <CaretRight />
+                                    </Button>
+                            }
+                            { state.accounts[0] === state.owner
+                                && state.workflowStatus === "1"
+                                &&
+                                    <Button variant="primary" onClick={ stopRegisteringProposals }>
+                                        Stop registering proposals
+                                        <CaretRight />
+                                    </Button>
+                            }
+                            { state.accounts[0] === state.owner
+                                && state.workflowStatus === "2"
+                                &&
+                                    <Button variant="primary" onClick={ startVotingSession }>
+                                        Start voting session
+                                        <CaretRight />
+                                    </Button>
+                            }
+                            { state.accounts[0] === state.owner
+                                && state.workflowStatus === "3"
+                                &&
+                                    <Button variant="primary" onClick={ stopVotingSession }>
+                                        Stop voting session
+                                        <CaretRight />
+                                    </Button>
+                            }
+                            { state.accounts[0] === state.owner
+                                && state.workflowStatus === "4"
+                                &&
+                                    <Button variant="primary" size="sm" onClick={ tallyVotes }>
+                                        Tally votes
+                                        <CaretRight />
+                                    </Button>
+                            }
+                        </Row>
+                    </Col>
+                </Row>
+                <Row>
+                    { showVoterInfo &&
+                        <div className="VoterSearchRegisteringInfo">
+                            <div>
+                                <Card style={{ width: '30rem' }}>
+                                    <Card.Body style={{ textAlign: 'left' }}>
+                                        <Card.Title style={{ fontSize: '15px' }}>
+                                            <Row className="InputRowSm">
+                                                <Col md={1}>
+                                                    <PersonCircle />
+                                                </Col>
+                                                <Col md={11}>
+                                                    { voterSearchAddress }
+                                                </Col>
+                                            </Row>
+                                        </Card.Title>
+                                        <Card.Text>
+                                            <span>
+                                                { voterSearch.isRegistered
+                                                    ?
+                                                        <span>
+                                                            <CheckCircleFill color="green" /> is registered.
+                                                        </span>
+                                                    :
+                                                        <span>
+                                                            <XCircleFill color="red" /> is not registered yet.
+                                                        </span>
+                                                }<br />
+                                                { voterSearch.hasVoted
+                                                    ?
+                                                        <span>
+                                                            <CheckCircleFill color="green" /> has voted <b>Proposal ID#{voterSearch.votedProposalId}</b> 
+                                                        </span>
+                                                    :
+                                                        <span>
+                                                            <XCircleFill color="red" /> has not voted yet.
+                                                        </span>
+                                                }
+                                            </span>
+                                        </Card.Text>
+                                    </Card.Body>
+                                </Card>
+                            </div>
+                        </div>
+                    }
                 </Row>
             </Container>
         </div>

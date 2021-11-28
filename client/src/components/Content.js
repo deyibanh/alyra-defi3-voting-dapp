@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Alert } from 'react-bootstrap';
 import WorkflowStepper from "./WorkflowStepper";
-import Voter from "./Voter";
 import Proposal from "./Proposal";
 import ProposalForm from "./ProposalForm";
 import "./Content.css";
@@ -11,13 +10,6 @@ function Content(props) {
     const loadingState = props.loadingState;
     const voter = props.voter;
     const proposalWinners = props.proposalWinners;
-    // const [voter, setVoter] = useState({});
-    
-    // useEffect(() => {
-    //     (async function () {
-    //         setVoter(props.voter);
-    //     })();
-    // }, [props.voter]);
 
     return (
         <div className="Content">
@@ -28,11 +20,10 @@ function Content(props) {
                         { voter.isRegistered
                             ?
                                 <div>
-                                    <WorkflowStepper state={ state } />
-                                    { state.workflowStatus === "0"
-                                        && state.accounts[0] === state.owner
+                                    <WorkflowStepper state={ state } voter={ voter } />
+                                    {/* { (voter.isRegistered || state.accounts[0] === state.owner)
                                         && <Voter state={ state } />
-                                    }
+                                    } */}
                                     { state.workflowStatus === "0"
                                         && 
                                             <Alert variant="info" className="AlertBox">

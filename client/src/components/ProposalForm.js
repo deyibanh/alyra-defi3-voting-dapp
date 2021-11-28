@@ -3,7 +3,6 @@ import "./ProposalForm.css";
 
 function ProposalForm(props) {
     const state = props.state;
-    const voter = props.voter;
     const [inputAddProposalDescription, setInputAddProposalDescription] = useState("");
 
     function onChangeInputAddProposalDescription(event) {

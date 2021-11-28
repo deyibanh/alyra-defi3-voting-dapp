@@ -1,58 +1,64 @@
 import React, { useState } from "react";
-import "./Voter.css";
+import { Card, Container, Row, Col, Button, FormControl, InputGroup } from 'react-bootstrap';
+import { PersonCircle, CheckCircleFill, XCircleFill, PersonPlusFill, Search } from 'react-bootstrap-icons';
 
+import "./Voter.css";
 
 function Voter(props) {
     const state = props.state;
-    const [inputAddVoterAddress, setInputAddVoterAddress] = useState("");
-    const [inputGetVoterAddress, setInputGetVoterAddress] = useState("");
+    const [inputVoterAddress, setInputVoterAddress] = useState("");
     const [showVoterInfo, setShowVoterInfo] = useState(false);
-    const [voter, setVoter] = useState({});
+    // const [voterSearch, setVoterSearch] = useState({});
+    // const [voterSearchAddress, setVoterSearchAddress] = useState("");
 
-    function onChangeInputAddVoterAddress(event) {
+    function onChangeInputVoterAddress(event) {
         event.preventDefault();
-        setInputAddVoterAddress(event.target.value);
-    }
-
-    function onChangeInputGetVoterAddress(event) {
-        event.preventDefault();
-        setInputGetVoterAddress(event.target.value);
+        setInputVoterAddress(event.target.value);
     }
 
     async function onSubmitAddVoter() {
-        await state.contract.methods.addVoter(inputAddVoterAddress).send({from: state.accounts[0]});
+        await state.contract.methods.addVoter(inputVoterAddress).send({from: state.accounts[0]});
+        // setVoterSearch({});
+        // setVoterSearchAddress("");
+        // props.onChangeShowVoterInfo(false);
+        // setShowVoterInfo(false);
     }
 
     async function onSubmitGetVoter() {
-        const voter = await state.contract.methods.getVoter(inputGetVoterAddress).call({from: state.accounts[0]});
-        setVoter(voter);
-        setShowVoterInfo(true);
+        const voterSearch = await state.contract.methods.getVoter(inputVoterAddress).call({from: state.accounts[0]});
+        // setVoterSearch(voterSearch);
+        // setVoterSearchAddress(inputVoterAddress);
+        props.onChangeVoterSearch(inputVoterAddress, voterSearch);
+        props.onChangeShowVoterInfo(true);
+        // setShowVoterInfo(true);
     }
 
     return (
-        <div>
-            <div>
-                <label>Add new voter : </label>
-                <input type="text" value={ inputAddVoterAddress } onChange={ onChangeInputAddVoterAddress }  />
-                <input type="submit" value="Add voter" onClick={ onSubmitAddVoter }/>
-            </div>
-
-            <div>
-                <label>Search voter : </label>
-                <input type="text" value={ inputGetVoterAddress } onChange={ onChangeInputGetVoterAddress }  />
-                <input type="submit" value="Search" onClick={ onSubmitGetVoter } />
-            </div>
-            { showVoterInfo &&
-                <div>
-                    { !voter.isRegistered
-                        ? <span>This address is not registered as voter.</span>
-                        : <div>
-                            <div>Is registered: { voter.isRegistered.toString() }</div>
-                            <div>Has voted: { voter.hasVoted.toString() }</div>
-                        </div>
-                    }
-                </div>
-            }
+        <div className="Voter">
+            <Container>
+                <Row>
+                    <Col md={8}>
+                        <InputGroup>
+                            <FormControl 
+                                placeholder="Wallet address"
+                                aria-label="Wallet address"
+                                value={ inputVoterAddress }
+                                onChange={ onChangeInputVoterAddress }
+                            />
+                            <Button variant="outline-secondary" onClick={ onSubmitGetVoter } >
+                                <Search />
+                            </Button>
+                            { state.workflowStatus === "0"
+                                && state.accounts[0] === state.owner
+                                &&
+                                    <Button variant="outline-secondary" onClick={ onSubmitAddVoter } >
+                                        <PersonPlusFill />
+                                    </Button>
+                            }
+                        </InputGroup>
+                    </Col>
+                </Row>
+            </Container>
         </div>
     );
 }
