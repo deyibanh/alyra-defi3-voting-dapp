@@ -6,7 +6,6 @@ import "./Proposal.css";
 
 function Proposal(props) {
     const state = props.state;
-    const contract = state.contract;
     const voter = props.voter;
     const proposalIdsWinners = props.proposalIdsWinners;
     const [proposals, setProposals] = useState([]);
@@ -14,26 +13,38 @@ function Proposal(props) {
     useEffect(() => {
         (async function () {
             try {            
-                const proposals = await contract.methods.getProposals().call();
-                setProposals([...proposals]);
+                const proposalList = await state.contract.methods.getProposals().call();
+                setProposals([...proposalList]);
 
-                await contract.events.ProposalRegistered()
+                // To fix: Calling many times the proposal event without reason.
+                state.contract.events.ProposalRegistered({
+                        fromBlock: 'latest'
+                    })
                     .on("data", async event => {
                         const proposalId = event.returnValues.proposalId;
-                        const proposal = await contract.methods.getProposal(proposalId).call();
-                        const newProposals = proposals;
+                        const proposal = await state.contract.methods.getProposal(proposalId).call();
+                        const newProposals = proposalList;
                         newProposals.push(proposal);
                         setProposals([...newProposals]);
                     })
                     .on("changed", changed => console.log(changed))
                     .on("error", err => console.error(err))
                     .on("connected", str => console.log(str));
+
+                // await state.contract.once('ProposalRegistered', {}, async function(error, event){ 
+                //     const proposalId = event.returnValues.proposalId;
+                //     const proposal = await state.contract.methods.getProposal(proposalId).call();
+                //     const newProposals = proposalList;
+                //     newProposals.push(proposal);
+                //     setProposals([...newProposals]);
+                //     console.log("New Proposal" + proposalId);
+                // });
             } catch (error) {
                 alert("Failed to get proposals.");
                 console.error(error);
             }
         })();
-    }, [contract]);
+    }, [state.contract]);
 
     async function vote(proposalId) {
         await state.contract.methods.vote(proposalId).send({from: state.accounts[0]});
@@ -43,9 +54,11 @@ function Proposal(props) {
         <div className="Proposal">
             <div>
                 { state.workflowStatus === "1"
+                    && voter.isRegistered
                     && <ProposalForm state={ state } voter={ voter } />
                 }
                 { state.workflowStatus === "2"
+                    && voter.isRegistered
                     && 
                         <Alert variant="info" className="AlertBox">
                             <Alert.Heading>Proposals registration ended.</Alert.Heading>
@@ -57,6 +70,7 @@ function Proposal(props) {
                         </Alert>
                 }
                 { state.workflowStatus === "4"
+                    && voter.isRegistered
                     && 
                         <Alert variant="info" className="AlertBox">
                             <Alert.Heading>Voting session ended.</Alert.Heading>
@@ -126,65 +140,74 @@ function Proposal(props) {
                                         </Container>
                                     </div>
                             }
-                            <hr />
+                            { voter.isRegistered
+                                &&
+                                    <hr />
+                            }
                         </div>
                 }
-                <h2>Proposals</h2>
-                { proposals.length > 0 
-                    ? 
+                { voter.isRegistered
+                    &&
                         <div>
-                            <Container>
-                                <Row xs={4}>
-                                    { proposals.map((proposal, index) =>
-                                        <Col key={ index }>
-                                            <Card style={{ width: '18rem', height: '12rem', 'marginTop': '18px' }}>
-                                                <Card.Body style={{ textAlign: 'left' }}>
-                                                    <Card.Title style={{ fontSize: '15px' }}>
-                                                        <Row className="InputRowSm">
-                                                            <Col>
-                                                                ID#{ index }
-                                                            </Col>
-                                                        </Row>
-                                                    </Card.Title>
-                                                    { state.workflowStatus === "5"
-                                                        &&
-                                                            <Card.Text>
-                                                                <b>{ proposal.voteCount } { proposal.voteCount > 1 ? <span>votes</span> : <span>vote</span> }</b>
-                                                            </Card.Text>
-                                                    }
-                                                    <Card.Text>
-                                                        { proposal.description }
-                                                    </Card.Text>
-                                                    <Card.Text>
-                                                        { voter.hasVoted
-                                                            && parseInt(voter.votedProposalId) === index
-                                                            &&
-                                                                <span className={ state.workflowStatus === '5' ? 'text-success' : 'text-primary' }>
-                                                                    You have voted for this proposal.
-                                                                </span>
-                                                        }
-                                                    </Card.Text>
-                                                </Card.Body>
-                                                { state.workflowStatus === "3"
-                                                    && !voter.hasVoted
-                                                    &&
-                                                        <Card.Body>
-                                                            <Button onClick={ () => vote(index) }>Vote</Button>
-                                                        </Card.Body>
-                                                }
-                                            </Card>
-                                        </Col>
-                                    )}
-                                </Row>
-                            </Container>
-                        </div>
-                    :
-                        <div>
-                            <Container>
-                                <Row>
-                                    <Col>There is no proposals.</Col>
-                                </Row>
-                            </Container>
+                            { proposals.length > 0 
+                                ?
+                                    <div>
+                                        <h2>Proposals</h2>
+                                        <Container>
+                                            <Row xs={4}>
+                                                { proposals.map((proposal, index) =>
+                                                    <Col key={ index }>
+                                                        <Card style={{ width: '18rem', height: '12rem', 'marginTop': '18px' }}>
+                                                            <Card.Body style={{ textAlign: 'left' }}>
+                                                                <Card.Title style={{ fontSize: '15px' }}>
+                                                                    <Row className="InputRowSm">
+                                                                        <Col>
+                                                                            ID#{ index }
+                                                                        </Col>
+                                                                    </Row>
+                                                                </Card.Title>
+                                                                { state.workflowStatus === "5"
+                                                                    &&
+                                                                        <Card.Text>
+                                                                            <b>{ proposal.voteCount } { proposal.voteCount > 1 ? <span>votes</span> : <span>vote</span> }</b>
+                                                                        </Card.Text>
+                                                                }
+                                                                <Card.Text>
+                                                                    { proposal.description }
+                                                                </Card.Text>
+                                                                <Card.Text>
+                                                                    { voter.hasVoted
+                                                                        && parseInt(voter.votedProposalId) === index
+                                                                        &&
+                                                                            <span className={ state.workflowStatus === '5' ? 'text-success' : 'text-primary' }>
+                                                                                You have voted for this proposal.
+                                                                            </span>
+                                                                    }
+                                                                </Card.Text>
+                                                            </Card.Body>
+                                                            { state.workflowStatus === "3"
+                                                                && !voter.hasVoted
+                                                                &&
+                                                                    <Card.Body>
+                                                                        <Button onClick={ () => vote(index) }>Vote</Button>
+                                                                    </Card.Body>
+                                                            }
+                                                        </Card>
+                                                    </Col>
+                                                )}
+                                            </Row>
+                                        </Container>
+                                    </div>
+                                :
+                                    <div>
+                                        <h2>Proposals</h2>
+                                        <Container>
+                                            <Row>
+                                                <Col>There is no proposals.</Col>
+                                            </Row>
+                                        </Container>
+                                    </div>
+                            }
                         </div>
                 }
             </div>

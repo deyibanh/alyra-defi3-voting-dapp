@@ -16,7 +16,7 @@ function Content(props) {
                 && state.accounts
                 ?
                     <div>
-                        { voter.isRegistered
+                        { (voter.isRegistered || state.workflowStatus === "5")
                             ?
                                 <div>
                                     <WorkflowStepper state={ state } voter={ voter } />
@@ -35,7 +35,6 @@ function Content(props) {
                                     <hr />
                                     { parseInt(state.workflowStatus) >= 1
                                         && parseInt(state.workflowStatus) <= 5
-                                        && voter.isRegistered
                                         && <Proposal state={ state } voter={ voter } proposalIdsWinners={ proposalIdsWinners } />
                                     }
                                 </div>

@@ -19,7 +19,7 @@ function App() {
     const [proposalIdsWinners, setProposalIdsWinners] = useState([]);
 
     useEffect(() => {
-        (async function () {
+        (async () => {
             try {
                 const web3 = await getWeb3();
                 const accounts = await web3.eth.getAccounts();
@@ -43,13 +43,53 @@ function App() {
                 setLoadingState(false);
                 setVoter(voter);
 
-                if (voter.isRegistered && workflowStatus === "5") {
+                if (workflowStatus === "5") {
                     const winnersIds = await contract.methods.getWinningProposalIds().call();
                     setProposalIdsWinners(winnersIds);
                 }
 
-                contract.events.WorkflowStatusChange()
-                    .on("data", event => {
+                // Try "once" methods
+                // await contract.once('WorkflowStatusChange', {}, async function(error, event){ 
+                //     const newStatus = event.returnValues.newStatus;
+                //     setState({
+                //         web3: web3,
+                //         accounts: accounts,
+                //         contract: contract,
+                //         owner: owner,
+                //         workflowStatus: newStatus
+                //     });
+                //     console.log("Workflow status have been changed: " + newStatus);
+                // });
+
+                // await contract.once('VoterRegistered', {}, async function(error, event){ 
+                //     const voterAddress = event.returnValues.voterAddress;
+                    
+                //     if (voterAddress === accounts[0]) {
+                //         const voterInfo = await contract.methods.getVoter(accounts[0]).call();
+                //         setVoter(voterInfo);
+                //     }
+
+                //     console.log("New voter have been registered: " + voterAddress);
+                // });
+
+                // await contract.once('Voted', {}, async function(error, event){ 
+                //     const voterAddress = event.returnValues.voterAddress;
+                //     // const proposalId = event.returnValues.proposalId;
+
+                //     if (voterAddress === accounts[0]) {
+                //         const voter = await contract.methods.getVoter(accounts[0]).call();
+                //         setVoter(voter);
+                //     }
+
+                //     console.log("New voter have voted: " + voterAddress);
+                // });
+
+
+                // To fix: Calling many times the proposal event without reason.
+                await contract.events.WorkflowStatusChange({
+                        fromBlock: 'latest'
+                    })
+                    .on("data", async event => {
                         const newStatus = event.returnValues.newStatus;
                         setState({
                             web3: web3,
@@ -58,12 +98,21 @@ function App() {
                             owner: owner,
                             workflowStatus: newStatus
                         });
+
+                        if (newStatus === "5") {
+                            const winnersIds = await contract.methods.getWinningProposalIds().call();
+                            setProposalIdsWinners(winnersIds);
+                        }
+
+                        console.log("Workflow status have been changed: " + newStatus);
                     })
                     .on("changed", changed => console.log(changed))
                     .on("error", err => console.error(err))
                     .on("connected", str => console.log(str));
 
-                contract.events.VoterRegistered()
+                await contract.events.VoterRegistered({
+                        fromBlock: 'latest'
+                    })
                     .on("data", async event => {
                         const voterAddress = event.returnValues.voterAddress;
 
@@ -71,12 +120,16 @@ function App() {
                             const voterInfo = await contract.methods.getVoter(accounts[0]).call();
                             setVoter(voterInfo);
                         }
+
+                        console.log("New voter have been registered: " + voterAddress);
                     })
                     .on("changed", changed => console.log(changed))
                     .on("error", err => console.error(err))
                     .on("connected", str => console.log(str));
                 
-                contract.events.Voted()
+                await contract.events.Voted({
+                        fromBlock: 'latest'
+                    })
                     .on("data", async event => {
                         const voterAddress = event.returnValues.voterAddress;
                         // const proposalId = event.returnValues.proposalId;
@@ -85,6 +138,8 @@ function App() {
                             const voter = await contract.methods.getVoter(accounts[0]).call();
                             setVoter(voter);
                         }
+
+                        console.log("New voter have voted: " + voterAddress);
                     })
                     .on("changed", changed => console.log(changed))
                     .on("error", err => console.error(err))
@@ -94,7 +149,7 @@ function App() {
                 console.error(error);
             }
         })();
-    }, [state]);
+    }, []);
 
     return (
         <div className="App">
