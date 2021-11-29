@@ -19,7 +19,7 @@ The goal of this project is to create a Dapp Voting System:
 
 ## Demo
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/0xE1c4oHbXI?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![Alyra Voting System](./Alyra-Defi-3-Voting-System-Demo.gif)](https://www.youtube.com/watch?v=0xE1c4oHbXI)
 
 ## Links
 
