@@ -17,3 +17,7 @@ The goal of this project is to create a Dapp Voting System:
 - the owner tally all votes
 - everybody can see the result.
 
+## Links
+
+- Ropsten address: [0x8E3352F99f70fAa7c356EF7316e5AD0AFb614FB9](https://ropsten.etherscan.io/address/0x8E3352F99f70fAa7c356EF7316e5AD0AFb614FB9)
+- Github-pages: <https://deyibanh.github.io/alyra-defi3-voting-dapp/>
