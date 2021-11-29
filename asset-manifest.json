@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/alyra-defi3-voting-dapp/static/css/main.d8e6d7c2.chunk.css",
-    "main.js": "/alyra-defi3-voting-dapp/static/js/main.7d0ac561.chunk.js",
-    "main.js.map": "/alyra-defi3-voting-dapp/static/js/main.7d0ac561.chunk.js.map",
+    "main.js": "/alyra-defi3-voting-dapp/static/js/main.243ad46d.chunk.js",
+    "main.js.map": "/alyra-defi3-voting-dapp/static/js/main.243ad46d.chunk.js.map",
     "runtime-main.js": "/alyra-defi3-voting-dapp/static/js/runtime-main.e69f4fc6.js",
     "runtime-main.js.map": "/alyra-defi3-voting-dapp/static/js/runtime-main.e69f4fc6.js.map",
     "static/css/2.6a23f8e0.chunk.css": "/alyra-defi3-voting-dapp/static/css/2.6a23f8e0.chunk.css",
     "static/js/2.37ffec63.chunk.js": "/alyra-defi3-voting-dapp/static/js/2.37ffec63.chunk.js",
     "static/js/2.37ffec63.chunk.js.map": "/alyra-defi3-voting-dapp/static/js/2.37ffec63.chunk.js.map",
     "index.html": "/alyra-defi3-voting-dapp/index.html",
-    "precache-manifest.7bf7d8dd4b6d32b193724826d788cfae.js": "/alyra-defi3-voting-dapp/precache-manifest.7bf7d8dd4b6d32b193724826d788cfae.js",
+    "precache-manifest.639f1eb357bd02d489786a1c3bd05d16.js": "/alyra-defi3-voting-dapp/precache-manifest.639f1eb357bd02d489786a1c3bd05d16.js",
     "service-worker.js": "/alyra-defi3-voting-dapp/service-worker.js",
     "static/css/2.6a23f8e0.chunk.css.map": "/alyra-defi3-voting-dapp/static/css/2.6a23f8e0.chunk.css.map",
     "static/css/main.d8e6d7c2.chunk.css.map": "/alyra-defi3-voting-dapp/static/css/main.d8e6d7c2.chunk.css.map"
@@ -19,6 +19,6 @@
     "static/css/2.6a23f8e0.chunk.css",
     "static/js/2.37ffec63.chunk.js",
     "static/css/main.d8e6d7c2.chunk.css",
-    "static/js/main.7d0ac561.chunk.js"
+    "static/js/main.243ad46d.chunk.js"
   ]
 }

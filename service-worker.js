@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/alyra-defi3-voting-dapp/precache-manifest.7bf7d8dd4b6d32b193724826d788cfae.js"
+  "/alyra-defi3-voting-dapp/precache-manifest.639f1eb357bd02d489786a1c3bd05d16.js"
 );
 
 self.addEventListener('message', (event) => {
