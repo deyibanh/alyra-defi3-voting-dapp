@@ -1,3 +1,0 @@
-## Client README
-
-Work in progress...
