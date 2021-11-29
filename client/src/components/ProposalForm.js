@@ -18,9 +18,9 @@ function ProposalForm(props) {
     }
 
     return (
-        <div>
+        <div className="ProposalForm">
             <Container>
-                <Row>
+                <Row style={{ margin: 'auto', width: '50%' }}>
                     <Col>
                         <InputGroup>
                             <FormControl
@@ -33,8 +33,6 @@ function ProposalForm(props) {
                                 Submit
                             </Button>
                         </InputGroup>
-                    </Col>
-                    <Col>
                     </Col>
                 </Row>
             </Container>

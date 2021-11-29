@@ -18,10 +18,6 @@ function Proposal(props) {
     return (
         <div className="Proposal">
             <div>
-                { workflowStatus === "1"
-                    && voter.isRegistered
-                    && <ProposalForm state={ state } voter={ voter } />
-                }
                 { workflowStatus === "2"
                     && voter.isRegistered
                     && 
@@ -114,10 +110,13 @@ function Proposal(props) {
                 { voter.isRegistered
                     &&
                         <div>
+                            <h2>Proposals</h2>
+                            { workflowStatus === "1"
+                                && <ProposalForm state={ state } voter={ voter } />
+                            }
                             { proposals.length > 0 
                                 ?
                                     <div>
-                                        <h2>Proposals</h2>
                                         <Container>
                                             <Row xs={4}>
                                                 { proposals.map((proposal, index) =>
@@ -165,10 +164,14 @@ function Proposal(props) {
                                     </div>
                                 :
                                     <div>
-                                        <h2>Proposals</h2>
                                         <Container>
                                             <Row>
-                                                <Col>There is no proposals.</Col>
+                                                <Col>
+                                                    There is no proposals yet.<br />
+                                                    { workflowStatus === "1"
+                                                        && <span>Submit a new one with the button just above.</span>
+                                                    }
+                                                </Col>
                                             </Row>
                                         </Container>
                                     </div>

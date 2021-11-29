@@ -22,6 +22,7 @@ function Content(props) {
                             ?
                                 <div>
                                     <WorkflowStepper state={ state } workflowStatus={ workflowStatus } voter={ voter } />
+                                    <hr />
                                     { workflowStatus === "0"
                                         && 
                                             <Alert variant="info" className="AlertBox">
@@ -34,7 +35,6 @@ function Content(props) {
                                                 </p>
                                             </Alert>
                                     }
-                                    <hr />
                                     { parseInt(workflowStatus) >= 1
                                         && parseInt(workflowStatus) <= 5
                                         &&

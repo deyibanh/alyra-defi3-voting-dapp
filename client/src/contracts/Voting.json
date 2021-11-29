@@ -33045,8 +33045,8 @@
         }
       },
       "links": {},
-      "address": "0xAbEd634466852CC68DEE47A291bef96Fd51E81e3",
-      "transactionHash": "0x775bc070dc90ec42e7aca340bffd313f8d18c4dd81ee088de0f6ab9f8e118f43"
+      "address": "0xcdba6039Fc811DBebf07679c4d44D2462E05B90c",
+      "transactionHash": "0xf8d98c97170dcd7fa34e0d1088cdb6f3f9c3fddcef5a1c7316f69ed8d03fa9ec"
     },
     "1637809786176": {
       "events": {},
@@ -33056,7 +33056,7 @@
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-11-29T18:40:56.800Z",
+  "updatedAt": "2021-11-29T18:52:31.174Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Dé Yi Banh",
