@@ -6,6 +6,7 @@ import "./Voter.css";
 
 function Voter(props) {
     const state = props.state;
+    const workflowStatus = props.workflowStatus;
     const [inputVoterAddress, setInputVoterAddress] = useState("");
 
     function onChangeInputVoterAddress(event) {
@@ -48,7 +49,7 @@ function Voter(props) {
                             <Button disabled={ inputVoterAddress === "" } variant="outline-secondary" onClick={ onSubmitGetVoter } >
                                 <Search />
                             </Button>
-                            { state.workflowStatus === "0"
+                            { workflowStatus === "0"
                                 && state.accounts[0] === state.owner
                                 &&
                                     <Button disabled={ inputVoterAddress === "" } variant="outline-secondary" onClick={ onSubmitAddVoter } >

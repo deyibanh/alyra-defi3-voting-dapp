@@ -7,6 +7,7 @@ import "./WorkflowStepper.css";
 
 function WorkflowStepper(props) {
     const state = props.state;
+    const workflowStatus = props.workflowStatus;
     const voter = props.voter;
     const steps = [
         "Voters Registration",
@@ -28,26 +29,25 @@ function WorkflowStepper(props) {
     const [voterSearchAddress, setVoterSearchAddress] = useState("");
     const [showVoterInfo, setShowVoterInfo] = useState(false);
 
-
     useEffect(() => {
         (function () {
-            if (state.workflowStatus === "0") {
+            if (workflowStatus === "0") {
                 setActiveStep(0);
             } else if (
-                state.workflowStatus === "1" ||  
-                state.workflowStatus === "2"
+                workflowStatus === "1" ||  
+                workflowStatus === "2"
             ) {
                 setActiveStep(1);
             } else if (
-                state.workflowStatus === "3" ||  
-                state.workflowStatus === "4"
+                workflowStatus === "3" ||  
+                workflowStatus === "4"
             ) {
                 setActiveStep(2);
-            } else if (state.workflowStatus === "5") {
+            } else if (workflowStatus === "5") {
                 setActiveStep(4);
             }
         })();
-    }, [state]);
+    }, [workflowStatus]);
 
     async function startRegisteringProposals() {
         await state.contract.methods.startRegisteringProposals().send({from: state.accounts[0]});
@@ -111,16 +111,16 @@ function WorkflowStepper(props) {
                 <Row className="InputRow">
                     <Col sm={9}>
                         { (voter.isRegistered || state.accounts[0] === state.owner)
-                            && <Voter state={ state } onChangeShowVoterInfo={ onChangeShowVoterInfo } onChangeVoterSearch={ onChangeVoterSearch }/>
+                            && <Voter state={ state } workflowStatus={ workflowStatus } onChangeShowVoterInfo={ onChangeShowVoterInfo } onChangeVoterSearch={ onChangeVoterSearch }/>
                         }
                     </Col>
                     <Col sm={3}>
                         <Row>
-                            <div className="WorflowStatus">State: <b>{ workflowStatusLabels[state.workflowStatus] }</b></div> 
+                            <div className="WorflowStatus">State: <b>{ workflowStatusLabels[workflowStatus] }</b></div> 
                         </Row>
                         <Row>
                             { state.accounts[0] === state.owner
-                                && state.workflowStatus === "0"
+                                && workflowStatus === "0"
                                 &&
                                     <Button variant="primary" onClick={ startRegisteringProposals }>
                                         Start registering proposals
@@ -128,7 +128,7 @@ function WorkflowStepper(props) {
                                     </Button>
                             }
                             { state.accounts[0] === state.owner
-                                && state.workflowStatus === "1"
+                                && workflowStatus === "1"
                                 &&
                                     <Button variant="primary" onClick={ stopRegisteringProposals }>
                                         Stop registering proposals
@@ -136,7 +136,7 @@ function WorkflowStepper(props) {
                                     </Button>
                             }
                             { state.accounts[0] === state.owner
-                                && state.workflowStatus === "2"
+                                && workflowStatus === "2"
                                 &&
                                     <Button variant="primary" onClick={ startVotingSession }>
                                         Start voting session
@@ -144,7 +144,7 @@ function WorkflowStepper(props) {
                                     </Button>
                             }
                             { state.accounts[0] === state.owner
-                                && state.workflowStatus === "3"
+                                && workflowStatus === "3"
                                 &&
                                     <Button variant="primary" onClick={ stopVotingSession }>
                                         Stop voting session
@@ -152,7 +152,7 @@ function WorkflowStepper(props) {
                                     </Button>
                             }
                             { state.accounts[0] === state.owner
-                                && state.workflowStatus === "4"
+                                && workflowStatus === "4"
                                 &&
                                     <Button variant="primary" onClick={ tallyVotes }>
                                         Tally votes

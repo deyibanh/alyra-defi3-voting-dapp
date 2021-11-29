@@ -6,8 +6,10 @@ import "./Content.css";
 
 function Content(props) {
     const state = props.state;
+    const workflowStatus = props.workflowStatus;
     const loadingState = props.loadingState;
     const voter = props.voter;
+    const proposals = props.proposals;
     const proposalIdsWinners = props.proposalIdsWinners;
 
     return (
@@ -16,11 +18,11 @@ function Content(props) {
                 && state.accounts
                 ?
                     <div>
-                        { (voter.isRegistered || state.workflowStatus === "5")
+                        { (voter.isRegistered || workflowStatus === "5")
                             ?
                                 <div>
-                                    <WorkflowStepper state={ state } voter={ voter } />
-                                    { state.workflowStatus === "0"
+                                    <WorkflowStepper state={ state } workflowStatus={ workflowStatus } voter={ voter } />
+                                    { workflowStatus === "0"
                                         && 
                                             <Alert variant="info" className="AlertBox">
                                                 <Alert.Heading>You are a voter.</Alert.Heading>
@@ -33,9 +35,16 @@ function Content(props) {
                                             </Alert>
                                     }
                                     <hr />
-                                    { parseInt(state.workflowStatus) >= 1
-                                        && parseInt(state.workflowStatus) <= 5
-                                        && <Proposal state={ state } voter={ voter } proposalIdsWinners={ proposalIdsWinners } />
+                                    { parseInt(workflowStatus) >= 1
+                                        && parseInt(workflowStatus) <= 5
+                                        &&
+                                            <Proposal
+                                                state={ state }
+                                                workflowStatus={ workflowStatus }
+                                                voter={ voter }
+                                                proposals={ proposals }
+                                                proposalIdsWinners={ proposalIdsWinners }
+                                            />
                                     }
                                 </div>
                             :

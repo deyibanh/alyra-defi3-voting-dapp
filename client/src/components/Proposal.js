@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Alert, Card, Container, Row, Col, Button } from 'react-bootstrap';
 import { CheckCircleFill } from 'react-bootstrap-icons';
 import ProposalForm from "./ProposalForm";
@@ -6,45 +6,10 @@ import "./Proposal.css";
 
 function Proposal(props) {
     const state = props.state;
+    const workflowStatus = props.workflowStatus;
     const voter = props.voter;
+    const proposals = props.proposals;
     const proposalIdsWinners = props.proposalIdsWinners;
-    const [proposals, setProposals] = useState([]);
-
-    useEffect(() => {
-        (async function () {
-            try {            
-                const proposalList = await state.contract.methods.getProposals().call();
-                setProposals([...proposalList]);
-
-                // To fix: Calling many times the proposal event without reason.
-                state.contract.events.ProposalRegistered({
-                        fromBlock: 'latest'
-                    })
-                    .on("data", async event => {
-                        const proposalId = event.returnValues.proposalId;
-                        const proposal = await state.contract.methods.getProposal(proposalId).call();
-                        const newProposals = proposalList;
-                        newProposals.push(proposal);
-                        setProposals([...newProposals]);
-                    })
-                    .on("changed", changed => console.log(changed))
-                    .on("error", err => console.error(err))
-                    .on("connected", str => console.log(str));
-
-                // await state.contract.once('ProposalRegistered', {}, async function(error, event){ 
-                //     const proposalId = event.returnValues.proposalId;
-                //     const proposal = await state.contract.methods.getProposal(proposalId).call();
-                //     const newProposals = proposalList;
-                //     newProposals.push(proposal);
-                //     setProposals([...newProposals]);
-                //     console.log("New Proposal" + proposalId);
-                // });
-            } catch (error) {
-                alert("Failed to get proposals.");
-                console.error(error);
-            }
-        })();
-    }, [state.contract]);
 
     async function vote(proposalId) {
         await state.contract.methods.vote(proposalId).send({from: state.accounts[0]});
@@ -53,11 +18,11 @@ function Proposal(props) {
     return (
         <div className="Proposal">
             <div>
-                { state.workflowStatus === "1"
+                { workflowStatus === "1"
                     && voter.isRegistered
                     && <ProposalForm state={ state } voter={ voter } />
                 }
-                { state.workflowStatus === "2"
+                { workflowStatus === "2"
                     && voter.isRegistered
                     && 
                         <Alert variant="info" className="AlertBox">
@@ -69,7 +34,7 @@ function Proposal(props) {
                             </p>
                         </Alert>
                 }
-                { state.workflowStatus === "4"
+                { workflowStatus === "4"
                     && voter.isRegistered
                     && 
                         <Alert variant="info" className="AlertBox">
@@ -83,7 +48,7 @@ function Proposal(props) {
                 }
             </div>
             <div className="ProposalList">
-                { state.workflowStatus === "5"
+                { workflowStatus === "5"
                     && 
                         <div>
                             <h2 className="text-success">
@@ -119,7 +84,7 @@ function Proposal(props) {
                                                                     { voter.hasVoted
                                                                         && voter.votedProposalId === proposalIdWinner
                                                                         &&
-                                                                            <span className={ state.workflowStatus === '5' ? 'text-success' : 'text-primary' }>
+                                                                            <span className={ workflowStatus === '5' ? 'text-success' : 'text-primary' }>
                                                                                 You have voted for this proposal.
                                                                             </span>
                                                                     }
@@ -166,7 +131,7 @@ function Proposal(props) {
                                                                         </Col>
                                                                     </Row>
                                                                 </Card.Title>
-                                                                { state.workflowStatus === "5"
+                                                                { workflowStatus === "5"
                                                                     &&
                                                                         <Card.Text>
                                                                             <b>{ proposal.voteCount } { proposal.voteCount > 1 ? <span>votes</span> : <span>vote</span> }</b>
@@ -179,13 +144,13 @@ function Proposal(props) {
                                                                     { voter.hasVoted
                                                                         && parseInt(voter.votedProposalId) === index
                                                                         &&
-                                                                            <span className={ state.workflowStatus === '5' ? 'text-success' : 'text-primary' }>
+                                                                            <span className={ workflowStatus === '5' ? 'text-success' : 'text-primary' }>
                                                                                 You have voted for this proposal.
                                                                             </span>
                                                                     }
                                                                 </Card.Text>
                                                             </Card.Body>
-                                                            { state.workflowStatus === "3"
+                                                            { workflowStatus === "3"
                                                                 && !voter.hasVoted
                                                                 &&
                                                                     <Card.Body>
